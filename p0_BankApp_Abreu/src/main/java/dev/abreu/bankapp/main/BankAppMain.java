@@ -3,17 +3,21 @@ package dev.abreu.bankapp.main;
 
 import java.util.Scanner;
 
+import dev.abreu.bankapp.data.AccountDAO;
+import dev.abreu.bankapp.data.AccountSQL;
 import dev.abreu.bankapp.exceptions.UsernameTakenException;
 import dev.abreu.bankapp.models.Account;
+import dev.abreu.bankapp.models.AccountService;
 import dev.abreu.bankapp.models.User;
+import dev.abreu.bankapp.models.UserService;
 
 /*As a user, I can:
- - register a new user account with the system (must be secured with a password)
- - login with my existing credentials
- - create at least one account
+ - (DONE) register a new user account with the system (must be secured with a password)
+ - (DONE) login with my existing credentials
+ - (DONE) create at least one account
  - deposit funds into an account (use doubles, not ints)
  - withdraw funds from an account (no overdrafting!)
- - view the balance of my account(s) 
+ - (DONE) view the balance of my account(s) 
   (all balance displays must be in proper currency format)*/
 
 public class BankAppMain {
@@ -21,15 +25,14 @@ public class BankAppMain {
 	// This is the Driver Class that connects everything
 	
 	public static User user = new User();
+	public static Account account = new Account();
 
 	private static Scanner scan = new Scanner(System.in);
-	// private static UserService userService;
+	private static UserService userService = new UserService();
+	private static AccountService accService = new AccountService();
 
 	public static void main(String[] args) {
 		boolean usingBankApp = true;
-		//boolean userHasAccount = true;
-		
-		//RegisterUser user = new RegisterUser();
 		
 		System.out.println("------------------------------------------");
 		System.out.println("Welcome to Devin Abreu's Bank Application!");
@@ -40,7 +43,7 @@ public class BankAppMain {
 		// Main Login Screen
 		while (usingBankApp) {
 			if (user == null) { // if user doesn't exist
-				System.out.println("What would you like to do\n"
+				System.out.println("What would you like to do:\n"
 									+ "1. Sign In\n" 
 									+ "2. Register (New User)\n"
 									+ "3. Exit");
@@ -49,7 +52,7 @@ public class BankAppMain {
 				
 				switch(input) {
 				case "1":
-					userLogin();
+					user = userLogin();
 					break;
 				case "2":
 					registerNewUser();
@@ -74,21 +77,22 @@ public class BankAppMain {
 				
 				switch(input) {
 				case "1":
-					//TODO accountDetails();
+					accountDetails(account, user);
 					break;
 				case "2":
-					//TODO deposit();
+					deposit(account, user);
 					break;
 				case "3":
-					//TODO withdraw();
+					withdraw(account, user);
 					break;
 				case "4":
 					//TODO transferFunds();
 				case "5":
-					openNewAccount(); //TODO
+					openNewAccount(user);
 					break;
 				default:
 					System.out.println("Signing Out...");
+					user = null;
 			}
 		}		
 	}
@@ -102,16 +106,12 @@ public class BankAppMain {
 		while(signingIn) {
 			System.out.println("Enter Username: ");
 			String username = scan.nextLine();
-			
-			user.setUsername(username);
-			
+		
 			System.out.println("Enter Password: ");
 			String password = scan.nextLine();
 			
-			user.setPassword(password);
-			
-			user.retrieveLoginInfo(user); // verify login info from database (return null if no user)
-			// take userService approach if you want
+			//user.retrieveLoginInfo(user); // verify login info from database (return null if no user)
+			User user = userService.signIn(username, password);
 			
 			if(user == null) {
 				System.out.println("Invalid Credentials!");
@@ -161,18 +161,22 @@ public class BankAppMain {
 					accountType = "Checking"; // if 1 or 2 is not chosen a checking is provided
 				}
 			
-			System.out.println("Type \"y\" to confirm"
-							 + "Type \"n\" to try again"
+			System.out.println("Type \"y\" to confirm\n"
+							 + "Type \"n\" to try again\n"
 							 + "Press any other key to return to main menu");
 			String confirm = scan.nextLine().toLowerCase();
 			
 			switch(confirm) {
 			case "y":
 				// the account type being passed here is the users initial account 
-				User user = new User(userFirstName, userLastName, username, password, accountType);
+				Account acc = new Account(accountType, 0.00);
+				User user = new User(userFirstName, userLastName, username, password, acc);
 				
 				try {
-					user.registerUser(user); // need to link this to database
+					userService.registerUser(user); // need to link this to database
+					acc.setUserID(user.getId());
+					accService.createNewAccount(acc);
+					
 					registeringUser = false;
 					System.out.println("You have successfully been registered!");
 				} catch (UsernameTakenException e) {
@@ -180,7 +184,7 @@ public class BankAppMain {
 				}
 				break;
 			case "n":
-				System.out.println("Please enter your information again:");
+				// System.out.println("Please enter your information again:");
 				break;
 			default:
 				System.out.println("Returning to Main Menu...");
@@ -191,9 +195,10 @@ public class BankAppMain {
 	}
 	
 	// Opening new account after alredy being registered as a user
-	private static void openNewAccount() { // insert new account for exisiting user
+	private static User openNewAccount(User user) { // insert new account for exisiting user
+		
 		boolean openingAccount = true;
-		boolean validFormat = true;
+		//boolean validFormat = true;
 		
 		while(openingAccount) {
 			String accountType = "";
@@ -211,27 +216,57 @@ public class BankAppMain {
 					break;
 				default:
 					accountType = "Checking"; // if 1 or 2 is not chosen a checking is provided
+					System.out.println("Checking account is being created");
 				}
 				
 				System.out.println("Please enter your initial deposit amount: (format X.XX)");
-				while(validFormat) {
-					if(scan.hasNextDouble()) {
-						double initialDeposit = scan.nextDouble();
-						Account newAccount = new Account(accountType, initialDeposit);
-						validFormat = false;
-					}
-					else {
-						System.out.println("Please enter an amount in the following format: X.XX");
-					}
-				}
-				//Account newAccount = new Account(accountType, initialDeposit);
-		}
+				double initDeposit = scan.nextDouble();
+				
+				Account newAccount = new Account(accountType, initDeposit);
+				newAccount.setUserID(user.getId());
+				accService.createNewAccount(newAccount);
+				
+				System.out.println("Successfully created new " + accountType + " account");
 		
+				openingAccount = false;
+				}
+		
+		return null;
+		}
+	
+	private static Account accountDetails(Account account, User user) {
+		accService.accountDetails(account, user);
+		System.out.println("\nAccount ID: " + account.getAccountID());
+		System.out.println("User ID: " + user.getId());
+		System.out.println("Account Type: " + account.getAccountType());
+		System.out.println("Account Balance: $" + account.getBalance() + "\n");
+		return account;
+	}
+	
+	private static Account deposit(Account account, User user) {
+		accService.accountDetails(account, user);
+		System.out.println("Enter amount to deposit: ");
+		double depositAmount = scan.nextDouble();
+		accService.deposit(account, depositAmount);
+		System.out.println("\nNew Account Balance is: " + account.getBalance());
+		return account;
+	}
+	
+	private static Account withdraw(Account account, User user) {
+		accService.accountDetails(account, user);
+		System.out.println("Enter amount to withdraw: ");
+		double withdrawAmount = scan.nextDouble();
+		accService.withdraw(account, withdrawAmount);
+		System.out.println("\nNew Account Balance is: " + account.getBalance());
+		return account;
 	}
 	
 	
 	
+		
+} // end of BankAppMain
 	
 	
 	
-}
+	
+	

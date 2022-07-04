@@ -1,8 +1,5 @@
 package dev.abreu.bankapp.models;
 
-import java.util.Objects;
-
-import dev.abreu.bankapp.exceptions.UsernameTakenException;
 
 public class User {
 	private int id;
@@ -10,7 +7,7 @@ public class User {
 	private String userLastName;
 	private String username;
 	private String password;
-	private String accountType;
+	//private Account account;
 	
 	public User() {
 		//super();
@@ -19,32 +16,32 @@ public class User {
 		this.userLastName = "";
 		this.username = "";
 		this.password = "";
-		this.accountType = "";
+		//this.account = new Account();
 	}
 	
-	public User(String firstName, String lastName, String username, String password, String accType) {
+	public User(String firstName, String lastName, String username, String password, Account account) {
 		//super();
 		this.id = 0;
 		this.userFirstName = firstName;
 		this.userLastName = lastName;
 		this.username = username;
 		this.password = password;
-		this.accountType = accType;
+		//this.account = new Account();
 	}
 	
-	public User retrieveLoginInfo(User user) {
-		// going to return the user who's username and password matches
-		// or return null if no user exists
-		//TODO retrieve login info from SQL
-		return null;
-	}
-	
-	public User registerUser(User user) throws UsernameTakenException {
-		// return the newly registered user
-		// or return null otherwise
-		//TODO add new user to database
-		return null;
-	}
+//	public User retrieveLoginInfo(User user) {
+//		// going to return the user who's username and password matches
+//		// or return null if no user exists
+//		//TODO retrieve login info from SQL
+//		return null;
+//	}
+//	
+//	public User registerUser(User user) throws UsernameTakenException {
+//		// return the newly registered user
+//		// or return null otherwise
+//		//TODO add new user to database
+//		return null;
+//	}
 	
 
 	public int getId() {
@@ -87,38 +84,7 @@ public class User {
 		this.password = password;
 	}
 
-	public String getAccountType() {
-		return accountType;
-	}
-
-	public void setAccountType(String accountType) {
-		this.accountType = accountType;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(accountType, id, password, userFirstName, userLastName, username);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		return Objects.equals(accountType, other.accountType) && id == other.id
-				&& Objects.equals(password, other.password) && Objects.equals(userFirstName, other.userFirstName)
-				&& Objects.equals(userLastName, other.userLastName) && Objects.equals(username, other.username);
-	}
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", userFirstName=" + userFirstName + ", userLastName=" + userLastName + ", username="
-				+ username + ", password=" + password + ", accountType=" + accountType + "]";
-	}
+	
 	
 	
 }
