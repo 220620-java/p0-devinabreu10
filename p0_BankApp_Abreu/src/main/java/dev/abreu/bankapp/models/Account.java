@@ -2,56 +2,67 @@ package dev.abreu.bankapp.models;
 
 import java.util.Scanner;
 
+import dev.abreu.bankapp.ds.ArrayList;
+import dev.abreu.bankapp.ds.List;
+
 public class Account {
 	// Add the necessary variable here:
 	
 	private String accountType; // Checkings or Savings
+	private int userID = -1;
+	private int accountID = -1;
 	private double initialDeposit;
 	private double balance; // need two variables for checkings/savings??
+	private List<Account> transactions;
 
 	private static Scanner scan = new Scanner(System.in);
 
-	// Make this class a JavaBean by implementing Serializable, setting everything
-	// to
-	// private and using getters/setters, inlcuding a public no-argument constructor
-
 	// Create the constructor here:
+	public Account(int userid) {
+		setUserID(userid);
+	}
+	
 	public Account(String accType, double deposit) {
 		this.accountType = accType;
-		this.initialDeposit = deposit;
+		this.setInitialDeposit(deposit);
 		this.balance = deposit;
+		this.setTransactions(new ArrayList<>());
 	}
 	public Account() {
 		this.accountType = "";
-		this.initialDeposit = 0.00;
+		this.setInitialDeposit(0.00);
 		this.balance = 0.00;
+		this.setTransactions(new ArrayList<>());
 	}
 	
 
 // Add methods of class below:
-	private void deposit() { // no negative deposits
-		double amount;
-		System.out.println("Enter amount to deposit: ");
-		amount = scan.nextDouble();
-		if (amount >= 0) {
-			balance += amount;
-			System.out.println("New balance is: " + balance);
-		} else {
-			System.out.println("Invalid deposit, try again");
-		}
-	}
 
-	private void withdraw() { // no negative withdraws
-		double amount;
-		System.out.println("Enter amount to withdraw: ");
-		amount = scan.nextDouble();
-		if (balance >= amount) {
-			balance -= amount;
-			System.out.println("New balance is: " + balance);
-		} else {
-			System.out.println("Insufficient funds are available");
-		}
-	}
+	
+	
+//	public void deposit() { // no negative deposits
+//		double amount;
+//		System.out.println("Enter amount to deposit: ");
+//		amount = scan.nextDouble();
+//		if (amount >= 0) {
+//			balance += amount;
+//			System.out.println("New balance is: " + balance);
+//		} else {
+//			System.out.println("Invalid deposit, try again");
+//		}
+//	}
+//
+//	private void withdraw() { // no negative withdraws
+//		double amount;
+//		System.out.println("Enter amount to withdraw: ");
+//		amount = scan.nextDouble();
+//		if (balance >= amount) {
+//			balance -= amount;
+//			System.out.println("New balance is: " + balance);
+//		} else {
+//			System.out.println("Insufficient funds are available");
+//		}
+//	}
 
 	private void transferFunds() {
 		// TODO
@@ -77,9 +88,44 @@ public class Account {
 		}
 	}
 
-	private void accountDetails() {
-		System.out.println("Account Type: " + accountType);
-		System.out.println("Balance: " + balance);
+	public String getAccountType() {
+		return accountType;
+	}
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+	public int getUserID() {
+		return userID;
+	}
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+	public int getAccountID() {
+		return accountID;
+	}
+	public void setAccountID(int accountID) {
+		this.accountID = accountID;
+	}
+	public double getInitialDeposit() {
+		return initialDeposit;
+	}
+	public void setInitialDeposit(double initialDeposit) {
+		this.initialDeposit = initialDeposit;
+	}
+	public double getBalance() {
+		return balance;
+	}
+	public void setBalance(double balance) {
+		this.balance = balance;
 	}
 
+	public List<Account> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(List<Account> transactions) {
+		this.transactions = transactions;
+	}
+
+	
 }

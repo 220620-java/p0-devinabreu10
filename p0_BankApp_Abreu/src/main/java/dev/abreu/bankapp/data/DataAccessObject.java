@@ -2,7 +2,7 @@ package dev.abreu.bankapp.data;
 
 import dev.abreu.bankapp.ds.List;
 
-public interface DataAccess<T> {
+public interface DataAccessObject<T> {
 	
 	public T create(T t);
 	
