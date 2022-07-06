@@ -1,48 +1,70 @@
 package dev.abreu.bankapp.models;
 
+import dev.abreu.bankapp.ds.ArrayList;
+import dev.abreu.bankapp.ds.List;
 
 public class User {
+	
+	/* Fields */
+	
 	private int id;
 	private String userFirstName;
 	private String userLastName;
 	private String username;
 	private String password;
-	//private Account account;
+	private Account account;
+	List<Account> accounts = new ArrayList<>();
 	
+	
+	/* Constructors */
+	
+	/**
+	 * No arguments constructor that instantiates
+	 * an empty User
+	 * 
+	 */
 	public User() {
-		//super();
 		this.id = 0;
 		this.userFirstName = "";
 		this.userLastName = "";
 		this.username = "";
 		this.password = "";
-		//this.account = new Account();
+		this.setAccount(account);
 	}
 	
+	/**
+	 * Parametrized constructor used when a new user
+	 * is being registered in the system
+	 * 
+	 * @param firstName User's first name
+	 * @param lastName User's last name
+	 * @param username username associated with User
+	 * @param password password associated with User
+	 * @param account initial account associated with User
+	 */
 	public User(String firstName, String lastName, String username, String password, Account account) {
-		//super();
 		this.id = 0;
 		this.userFirstName = firstName;
 		this.userLastName = lastName;
 		this.username = username;
 		this.password = password;
-		//this.account = new Account();
+		this.setAccount(account);
 	}
 	
-//	public User retrieveLoginInfo(User user) {
-//		// going to return the user who's username and password matches
-//		// or return null if no user exists
-//		//TODO retrieve login info from SQL
-//		return null;
-//	}
-//	
-//	public User registerUser(User user) throws UsernameTakenException {
-//		// return the newly registered user
-//		// or return null otherwise
-//		//TODO add new user to database
-//		return null;
-//	}
+	/**
+	 * Used for User's who already have an account
+	 * and are attempting to sign in
+	 * 
+	 * @param username User's username for sign in
+	 * @param password User's password for sign in
+	 */
+	public User(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
 	
+	
+	/* Public Methods (getters and setters) */
 
 	public int getId() {
 		return id;
@@ -84,6 +106,15 @@ public class User {
 		this.password = password;
 	}
 
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	
 	
 	
 	

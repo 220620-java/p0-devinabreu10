@@ -1,24 +1,52 @@
 package dev.abreu.bankapp.ds;
 
-//Interfaces and Abstract classes make up Abstraction in Java OOP
-//interfaces are for setting up a group of behaviors that something should have without
-//specifying how those behaviors will actually work 
-
 public interface List<T> {
-	// In interfaces, all methods are abstract implicitly because they're designed for behaviors, 
-	// fields are implicitly public, static, and final
-	// interfaces cannot be instantiated
-	// can't do this: List myList = new List();
-	public void add (T obj);
-	public T get (int index);
-	public T delete (int index);
-	public int indexOf (T obj);
-
 	
-	// if it's static you don't need the "default" keyword to make it concrete
-	@SuppressWarnings("rawtypes")
-	public static List emptyList() {
-		//TODO // reminder to come back and add an implementation
-		return null;
-	}
+	/**
+	 * Adds element to end of list
+	 * 
+	 * @param t the object being added to list
+	 */
+	public void add (T t);
+	
+	/**
+	 * retrieves element from specified index
+	 * 
+	 * @param index of the desired element
+	 * @return t the element at specified index
+	 */
+	public T get (int index);
+	
+	/**
+	 * deletes object at specified index from the list
+	 * 
+	 * @param index of the object to be removed
+	 * @return the object that was removed
+	 */
+	public T delete (int index);
+	
+	/**
+	 * returns the index of the first instance of
+	 * the specified object in the list
+	 * 
+	 * @param t the object being searched
+	 * @return the index of the specified object in the list
+	 */
+	public int indexOf (T t);
+	
+	/**
+	 * Determines whether the list is empty or contains
+	 * at least one element
+	 * 
+	 * @return true if list is empty, false otherwise
+	 */
+	public boolean isEmpty();
+	
+	/**
+	 * returns the current number of elements in the list
+	 * 
+	 * @return the number of elements in the list
+	 */
+	public int size();
+	
 }

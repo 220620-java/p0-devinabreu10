@@ -1,20 +1,16 @@
 package dev.abreu.bankapp.ds;
 
-import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
 
-// Generics allow you to restrict types and check them at compile time, while also still having
-// the flexibility of using different types with your classes
-// we use < > to specify Parameter type
-@SuppressWarnings("serial")
-public class ArrayList<T> implements List<T>, Serializable {
+public class ArrayList<T> implements List<T> {
 	private T[] array;
 	private int size;
-	
+
 	@SuppressWarnings("unchecked")
 	public ArrayList() { // array list constructor creates an arrList with intial capacity of 10
-		size = 0;
-		array = (T[]) new Object[10];
+		this.size = 0;
+		this.array = (T[]) new Object[10];
 	}
 
 	// varargs parameter (...) allows you to pass in either an array or
@@ -26,14 +22,11 @@ public class ArrayList<T> implements List<T>, Serializable {
 
 	@Override
 	public void add(T obj) {
-		// grow array if it runs out of space
 		if (size > array.length - 1) {
-			array = Arrays.copyOf(array, size*2);
+			array = Arrays.copyOf(array, size * 2); // grow array if it runs out of space
 		}
-		// adds new object
-		this.array[size++] = obj;
-		// this. is not necessary but is required
-		// in Typescript so might be good to get used to
+
+		this.array[size++] = obj; // adds new object
 	}
 
 	@Override
@@ -45,26 +38,26 @@ public class ArrayList<T> implements List<T>, Serializable {
 		}
 	}
 
-	// get size of the ArrayList
+	@Override
 	public int size() {
 		return this.size;
 	}
-	
-	// boolean to check if list is empty
+
+	@Override
 	public boolean isEmpty() {
 		return size <= 0;
 	}
 
 	@Override
 	public T delete(int index) { // removes the element at the specified index
-		if(index>=0 && index < this.array.length) {
+		if (index >= 0 && index < this.array.length) {
 			T obj = this.array[index];
-			// shift everything over
-			for (int i = 0; i < this.array.length-1; i++) {
-				this.array[i] = this.array[i+1];
+
+			for (int i = 0; i < this.array.length - 1; i++) {
+				this.array[i] = this.array[i + 1];
 			}
 			// shift the last item over
-			this.array[this.array.length-1]=null;
+			this.array[this.array.length - 1] = null;
 			this.size--;
 			return obj;
 		} else {
@@ -88,8 +81,34 @@ public class ArrayList<T> implements List<T>, Serializable {
 	}
 
 	@Override
-	public String toString() {
-		return Arrays.toString(array);
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.deepHashCode(array);
+		result = prime * result + Objects.hash(size);
+		return result;
 	}
-}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		@SuppressWarnings("unchecked")
+		ArrayList<T> other = (ArrayList<T>) obj;
+		return Arrays.deepEquals(array, other.array) && size == other.size;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder("");
+		for (int i = 0; i < this.size; i++) {
+			result.append(this.array[i] + "\n");
+		}
+		return result.toString();
+	}
+
+}

@@ -8,10 +8,23 @@ import java.sql.SQLException;
 import java.util.Properties; // saving DB credentials in properties file
 
 public class ConnectionUtil {
-	// singleton: private constructor, public static synchronized getter method
+	
+	// ***************************************
+	// Fields
+	// ***************************************
+	
 	private static ConnectionUtil connUtil;
 	private Properties props;
 	
+	// ***************************************
+	// Constructors
+	// ***************************************
+	
+	/**
+	 * No arguments constructor that reads username and
+	 * password from database.properties file to access connection
+	 * 
+	 */
 	private ConnectionUtil() {
 		props = new Properties();
 		
@@ -24,6 +37,15 @@ public class ConnectionUtil {
 		}
 	}
 	
+	// ***************************************
+	// Public methods
+	// ***************************************
+	
+	/**
+	 * Checks whether connection needs to be established or not
+	 * 
+	 * @return ConnectionUtil object that establishes connection
+	 */
 	public static synchronized ConnectionUtil getConnectionUtil() {
 		if (connUtil == null) {
 			connUtil = new ConnectionUtil();
@@ -31,7 +53,12 @@ public class ConnectionUtil {
 		return connUtil;
 	}
 	
-	// factory: creates Connection objects and returns them
+	/**
+	 * Uses username and password from database.properties file
+	 * to connect to database
+	 * 
+	 * @return Connection object that establishes connection
+	 */
 	public Connection getConnection() {
 		Connection conn = null;
 		// using properties file
