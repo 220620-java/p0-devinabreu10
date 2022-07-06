@@ -1,5 +1,7 @@
 package dev.abreu.bankapp.models;
 
+import java.util.Objects;
+
 import dev.abreu.bankapp.ds.ArrayList;
 import dev.abreu.bankapp.ds.List;
 
@@ -114,8 +116,29 @@ public class User {
 		this.account = account;
 	}
 
-	
-	
-	
-	
+	@Override
+	public int hashCode() {
+		return Objects.hash(account, accounts, id, password, userFirstName, userLastName, username);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(account, other.account) && Objects.equals(accounts, other.accounts) && id == other.id
+				&& Objects.equals(password, other.password) && Objects.equals(userFirstName, other.userFirstName)
+				&& Objects.equals(userLastName, other.userLastName) && Objects.equals(username, other.username);
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", userFirstName=" + userFirstName + ", userLastName=" + userLastName + ", username="
+				+ username + ", password=" + password + ", account=" + account + ", accounts=" + accounts + "]";
+	}
+
 }
