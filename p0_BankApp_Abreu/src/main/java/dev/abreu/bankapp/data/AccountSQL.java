@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import dev.abreu.bankapp.ds.ArrayList;
 import dev.abreu.bankapp.ds.List;
 import dev.abreu.bankapp.models.Account;
 import dev.abreu.bankapp.models.User;
@@ -106,29 +107,82 @@ public class AccountSQL implements AccountDAO {
 	}
 
 	@Override
-	public List<Account> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+	public void update(Account account) {
+		// try-with-resources automatically closes connection
+			try (Connection conn = connUtil.getConnection()){
+				conn.setAutoCommit(false);
+				// set up the SQL statement to be executed
+				String sql = "update accounts "
+								+ "set account_type = ?, "
+								+ "account_balance = ?,"
+								+ "where account_id = ?";
+					
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				stmt.setString(1, account.getAccountType());
+				stmt.setDouble(2, account.getBalance());
+				stmt.setInt(3, account.getAccountID());
+							
+				int rowsAffected = stmt.executeUpdate();
+				if (rowsAffected <= 1) {
+					conn.commit();
+				} else {
+					conn.rollback();
+				}
+			
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 	}
 
 	@Override
-	public void update(Account acc) {
+	public void delete(Account account) {
+		try (Connection conn = connUtil.getConnection()){
+			conn.setAutoCommit(false);
+			// set up the SQL statement to be executed
+			String sql = "delete from accounts where account_id = ?";
+			
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, account.getAccountID());
+					
+			int rowsAffected = stmt.executeUpdate();
+			if (rowsAffected <= 1) {
+				conn.commit();
+			} else {
+				conn.rollback();
+			}
+	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 	}
+	
+	public List<Account> findAllAccounts(User user) {
+		List<Account> allAccounts = new ArrayList<>();
 
-	@Override
-	public void delete(Account t) {
-		// TODO Auto-generated method stub
-		
+		try (Connection conn = connUtil.getConnection()) {
+			String sql = "SELECT * FROM accounts where user_id = ? ";
+
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, user.getId());
+
+			ResultSet resultSet = stmt.executeQuery();
+
+			while (resultSet.next()) {
+				int accountID = resultSet.getInt("account_id");
+				String accountType = resultSet.getString("account_type");
+				double balance = resultSet.getDouble("account_balance");
+				Account account = new Account(accountID, accountType, balance);
+
+				allAccounts.add(account);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return allAccounts;
 	}
-
-	@Override
-	public Account findByUserID(int userID) {
-	
-		
-		return null;
-	}	
-	
-	
 
 }
