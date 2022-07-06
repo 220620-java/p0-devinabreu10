@@ -1,5 +1,7 @@
 package dev.abreu.bankapp.models;
 
+import java.util.Objects;
+
 public class Account {
 
 	/* Fields */
@@ -55,8 +57,6 @@ public class Account {
 	
 	/* Public Methods (getters and setters) */
 
-// Add methods of class below:
-
 	public String getAccountType() {
 		return accountType;
 	}
@@ -88,5 +88,30 @@ public class Account {
 		this.balance = balance;
 	}
 
-	
+	@Override
+	public int hashCode() {
+		return Objects.hash(accountID, accountType, balance, initialDeposit, userID);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Account other = (Account) obj;
+		return accountID == other.accountID && Objects.equals(accountType, other.accountType)
+				&& Double.doubleToLongBits(balance) == Double.doubleToLongBits(other.balance)
+				&& Double.doubleToLongBits(initialDeposit) == Double.doubleToLongBits(other.initialDeposit)
+				&& userID == other.userID;
+	}
+
+	@Override
+	public String toString() {
+		return "Account [accountType=" + accountType + ", userID=" + userID + ", accountID=" + accountID
+				+ ", initialDeposit=" + initialDeposit + ", balance=" + balance + "]";
+	}
+
 }
